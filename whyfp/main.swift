@@ -6,3 +6,6 @@ print(xs.map1(succ))
 print(map(succ, xs))
 print(sum(xs))
 print(length(xs))
+
+let t: Tree<Int> = .node(.cons(.leaf(1), .empty))
+print(t)

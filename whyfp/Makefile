@@ -1,2 +1,2 @@
-main: main.swift List.swift
+main: main.swift List.swift Tree.swift
 	swiftc -o $@ $^
