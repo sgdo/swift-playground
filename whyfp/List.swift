@@ -11,15 +11,6 @@ enum List<A> {
         }
     }
 
-    func foldr1<B>(_ f: (A) -> (B) -> B, _ z: B) -> B {
-        switch self {
-        case .cons(let x, let xs):
-            return f(x)(xs.foldr1(f, z))
-        case .empty:
-            return z
-        }
-    }
-
     func map<B>(_ f: (A) -> B) -> List<B> {
         switch self {
         case .cons(let x, let xs):
@@ -28,21 +19,45 @@ enum List<A> {
             return .empty
         }
     }
+}
 
+// define `map` in terms of `foldr`
+
+extension List {
     func map1<B>(_ f: (A) -> B) -> List<B> {
         return foldr({ (x, y) in .cons(f(x), y) }, .empty)
     }
+}
 
-    func map2<B>(_ f: @escaping (A) -> B) -> List<B> {
-        return foldr1(compose(curry(fcons), f), .empty)
+// define `foldr` on curried function
+
+func foldr1<A, B>(_ f: (A) -> (B) -> B, _ z: B, _ xs: List<A>) -> B {
+    switch xs {
+    case .cons(let y, let ys):
+        return f(y)(foldr1(f, z, ys))
+    case .empty:
+        return z
     }
 }
 
-func compose<A, B, C>(_ f: @escaping (A) -> B, _ g: @escaping (C) -> A) -> (C) -> B {
+// define `map` in terms of above `foldr`
+
+func map2<A, B>(_ f: @escaping (A) -> B, _ xs: List<A>) -> List<B> {
+    return foldr1(curry(List.cons) • f, .empty, xs)
+}
+
+// function composition
+
+precedencegroup FunctionComposition {}
+infix operator • : FunctionComposition
+
+func •<A, B, C>(f: @escaping (A) -> B, g: @escaping (C) -> A) -> (C) -> B {
     return { x in
         return f(g(x))
     }
 }
+
+// currying
 
 func curry<A, B, C>(_ f: @escaping (A, B) -> C) -> (A) -> (B) -> C {
     return { x in
@@ -50,8 +65,4 @@ func curry<A, B, C>(_ f: @escaping (A, B) -> C) -> (A) -> (B) -> C {
             return f(x, y)
         }
     }
-}
-
-func fcons<A>(_ x: A, _ xs: List<A>) -> List<A> {
-    return .cons(x, xs)
 }
