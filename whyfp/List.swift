@@ -31,10 +31,10 @@ extension List {
 
 // define `foldr` on curried function
 
-func foldr1<A, B>(_ f: (A) -> (B) -> B, _ z: B, _ xs: List<A>) -> B {
+func foldr<A, B>(_ f: (A) -> (B) -> B, _ z: B, _ xs: List<A>) -> B {
     switch xs {
     case .cons(let y, let ys):
-        return f(y)(foldr1(f, z, ys))
+        return f(y)(foldr(f, z, ys))
     case .empty:
         return z
     }
@@ -42,8 +42,8 @@ func foldr1<A, B>(_ f: (A) -> (B) -> B, _ z: B, _ xs: List<A>) -> B {
 
 // define `map` in terms of above `foldr`
 
-func map2<A, B>(_ f: @escaping (A) -> B, _ xs: List<A>) -> List<B> {
-    return foldr1(curry(List.cons) • f, .empty, xs)
+func map<A, B>(_ f: @escaping (A) -> B, _ xs: List<A>) -> List<B> {
+    return foldr(curry(List.cons) • f, .empty, xs)
 }
 
 // function composition
@@ -70,7 +70,7 @@ func curry<A, B, C>(_ f: @escaping (A, B) -> C) -> (A) -> (B) -> C {
 // some functions on lists
 
 func sum(_ xs: List<Int>) -> Int {
-    return foldr1(curry(+), 0, xs)
+    return foldr(curry(+), 0, xs)
 }
 
 func count<A>(_ x: A) -> (Int) -> Int {
@@ -80,5 +80,5 @@ func count<A>(_ x: A) -> (Int) -> Int {
 }
 
 func length(_ xs: List<Int>) -> Int {
-    return foldr1(count, 0, xs)
+    return foldr(count, 0, xs)
 }
