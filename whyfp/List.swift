@@ -66,3 +66,19 @@ func curry<A, B, C>(_ f: @escaping (A, B) -> C) -> (A) -> (B) -> C {
         }
     }
 }
+
+// some functions on lists
+
+func sum(_ xs: List<Int>) -> Int {
+    return foldr1(curry(+), 0, xs)
+}
+
+func count<A>(_ x: A) -> (Int) -> Int {
+    return { y in
+        return y + 1
+    }
+}
+
+func length(_ xs: List<Int>) -> Int {
+    return foldr1(count, 0, xs)
+}
