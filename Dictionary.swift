@@ -6,4 +6,15 @@ extension Dictionary {
         }
         return d
     }
+
+    /**
+     * Right-biased union
+     */
+    public func union(_ dict: Dictionary<Key, Value>) -> Dictionary<Key, Value> {
+        var d = self
+        for (k, v) in dict {
+            d[k] = v
+        }
+        return d
+    }
 }
