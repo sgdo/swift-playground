@@ -9,6 +9,7 @@ public struct JSON {
         value = jsonObject
     }
 
+    public var bool: Bool? { return convert() }
     public var int: Int? { return convert() }
     public var double: Double? { return convert() }
     public var string: String? { return convert() }
